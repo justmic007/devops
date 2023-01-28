@@ -70,7 +70,7 @@ In fact, it is the same content that you previously got by ‘curl’ command, b
 Now that you have a web server up and running, you need to install a Database Management System (DBMS) to be able to store and manage data for your site in a relational database. MySQL is a popular relational database management system used within PHP environments, so we will use it in our project.
 
 Again, use ‘apt’ to acquire and install this software:
-`$ *sudo apt install mysql-server`
+`$ sudo apt install mysql-server`
 
 When prompted, confirm installation by typing Y, and then ENTER.
 
