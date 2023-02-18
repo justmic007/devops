@@ -1,1 +1,1 @@
-DB='mongodb+srv://darey-todo:Micah0ghale!123@dareycluster.cu0s1ly.mongodb.net/tododb?retryWrites=true&w=majority'
+DB='mongodb+srv://username:password@dareycluster.cu0s1ly.mongodb.net/tododb?retryWrites=true&w=majority'
