@@ -83,7 +83,7 @@ add following line
 
 To make this change permanent – open following config file `sudo vi /etc/sysconfig/selinux` and set `SELINUX=disabled` then `restart httpd`.
 
-[!Alt](images/Tooling-Website-Html.png)
+![Alt](images/Tooling-Website-Html.png)
 
 
  10. Update the website’s configuration to connect to the database (in `/var/www/html/functions.php` file). Apply `tooling-db.sql` script to your database using this command `mysql -h <databse-private-ip> -u <db-username> -p <db-pasword> < tooling-db.sql`
@@ -97,7 +97,7 @@ INSERT INTO ‘users’ (‘id’, ‘username’, ‘password’, ’email’, 
 
 12. Open the website in your browser `http://<Web-Server-Public-IP-Address-or-Public-DNS-Name>/index.php` and make sure you can login into the website with `myuser` user.
 
-[!Alt](images/tooling.jpeg)
+![Alt](images/tooling.jpeg)
 
 Congratulations!
 You have just implemented a web solution for a DevOps team using LAMP stack with remote Database and NFS servers.
