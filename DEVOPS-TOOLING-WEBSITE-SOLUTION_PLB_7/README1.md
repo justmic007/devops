@@ -28,7 +28,7 @@
 
 To check your `subnet cidr` – open your EC2 details in AWS web console and locate ‘Networking’ tab and open a Subnet link:
 
-[!Alt](images/EC2_subnet.png)
+![Alt](images/EC2_subnet.png)
 
 Make sure we set up permission that will allow our Web servers to read, write and execute files on NFS:
 
@@ -67,9 +67,9 @@ Configure access to NFS for clients within the same subnet (example of Subnet CI
     
     ```
 
-[!Alt](images/nfs_port.png)
+![Alt](images/nfs_port.png)
 
 **Important note:** In order for NFS server to be accessible from your client, you must also open following ports: TCP 111, UDP 111, UDP 2049
 
-[!Alt](images/nfs_port_open.png)
+![Alt](images/nfs_port_open.png)
 

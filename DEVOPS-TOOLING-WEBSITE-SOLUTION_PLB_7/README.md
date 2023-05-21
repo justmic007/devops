@@ -33,13 +33,13 @@ In this project you will implement a solution that consists of following compone
 
 
 For Rhel 8 server use this ami RHEL-8.6.0_HVM-20220503-x86_64-2-Hourly2-GP2 (ami-035c5dc086849b5de)
-[!Alt](images/AMI-prj7-1200x807.png)
+![Alt](images/AMI-prj7-1200x807.png)
 
-[!Alt](images/public-images-prj7-1536x486.png)
+![Alt](images/public-images-prj7-1536x486.png)
 
-[!Alt](images/search-for-AMI-1536x443.png)
+![Alt](images/search-for-AMI-1536x443.png)
 
-[!Alt](images/launch-instance-from-template-1536x823.png)
+![Alt](images/launch-instance-from-template-1536x823.png)
 
 On the diagram below you can see a common pattern where several stateless Web Servers share a common database and also access the same files using [Network File Sytem (NFS)](https://en.wikipedia.org/wiki/Network_File_System) as a shared file storage. Even though the NFS server might be located on a completely separate hardware – for Web Servers it look like a local file system from where they can serve the same files.
 
