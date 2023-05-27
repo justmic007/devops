@@ -102,7 +102,7 @@ Also do `Step 9 - Note 2` below on each of those webservers
 
 6. Verify that Apache files and directories are available on the Web Server in `/var/www` and also on the NFS server in `/mnt/apps`. If you see the same files – it means NFS is mounted correctly. You can try to create a new file `touch test.txt` from one server and check if the same file is accessible from other Web Servers.
 
-7. Locate the `log` folder for Apache on the `WebServer` and mount it to `NFS server’s` export for `logs`.
+7. Locate the `log` folder for Apache on the `WebServer` and mount it to `NFS server’s` export for `logs`. **DONT DO THIS NO 7. Instead the logs should reside in the webservers respectfully**
 
     ```
         sudo mount -t nfs -o rw,nosuid <NFS-Server-Private-IP-Address>:/mnt/logs /var/log/httpd
