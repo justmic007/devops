@@ -48,8 +48,8 @@ To submit your work for review and feedback – follow this instruction.
 **Prerequisites**
 Make sure that you have following servers installed and configured within Project-7:
 
-Two RHEL8 Web Servers
-One MySQL DB Server (based on Ubuntu 20.04)
-One RHEL8 NFS server
+1. Two RHEL8 Web Servers
+2. One MySQL DB Server (based on Ubuntu 20.04)
+3. One RHEL8 NFS server
 
 ![Alt](images/prerequisites-project8.png)
