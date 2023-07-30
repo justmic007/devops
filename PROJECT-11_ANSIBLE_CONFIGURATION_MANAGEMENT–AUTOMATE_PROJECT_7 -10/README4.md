@@ -1,30 +1,31 @@
 # RUN FIRST ANSIBLE TEST
 
 
-Note: We `installed Remote Development` pack extension by microsoft on VScode. The Icon is located on the left bottommost part of the vscode view
+### How to connect to remote instances using Remote Desktop extension
+- Note: We `installed Remote Development` pack extension by microsoft on VScode. The Icon is located on the left bottommost part of the vscode view
 
-Click on the Icon
-Select `Connect to Host` to connect to the `Jenkins-Ansible` server
-Enter `ssh -A ubuntu@18.216.144.182`
+- Click on the Icon
+- Select `Connect to Host` to connect to the `Jenkins-Ansible` server
+- Enter `ssh -A ubuntu@18.216.144.182`
 
-Note: if you get permission error like this: `Could not establish connection to "18.216.144.182": Permission denied (publickey).`, click `More Actions`, then click on `Open SSH Configuration File`, Click on `/Users/micah/.ssh/config` and Enter the below config snippet and save.
+- Note: if you get permission error like this: `Could not establish connection to "18.216.144.182": Permission denied (publickey).`, click `More Actions`, then click on `Open SSH Configuration File`, Click on `/Users/micah/.ssh/config` and Enter the below config snippet and save.
 
 ```
-Host Jenkins-Ansible
-  HostName 18.216.144.182
-  User ubuntu
-  IdentityFile /Users/micah/Documents/workspace/darey.io/devops/pbl7-key-pair.pem
-  ForwardAgent yes
-  ControlPath /tmp/ansible-ssh-%h-%p-%r
-  ControlMaster auto
-  ControlPersist 10m
+    Host Jenkins-Ansible
+      HostName 18.216.144.182
+      User ubuntu
+      IdentityFile /Users/micah/Documents/workspace/darey.io/devops/pbl7-key-pair.pem
+      ForwardAgent yes
+      ControlPath /tmp/ansible-ssh-%h-%p-%r
+      ControlMaster auto
+      ControlPersist 10m
 ```
-Close
-Click on the Remote Development extension again. By now, you should see the Host you saved in the config file and select it
-If you see an error like this: `Could not establish connection to "Jenkins-Ansible".`, click on More Actions
-Click on `Disconnected from SSH`,
-Click on `Connect Current Window to Host`
-Select the `Host` name eg `Jenkins-Ansible` that was used in as `Host` in the config snippet above
+- Close
+- Click on the Remote Development extension again. By now, you should see the Host you saved in the config file and select it
+- If you see an error like this: `Could not establish connection to "Jenkins-Ansible".`, click on More Actions
+- Click on `Disconnected from SSH`,
+- Click on `Connect Current Window to Host`
+- Select the `Host` name eg `Jenkins-Ansible` that was used in as `Host` in the config snippet above
 
 ## Step 7 – Run first Ansible test
 Now, it is time to execute `ansible-playbook` command and verify if your playbook actually works:
@@ -34,7 +35,13 @@ Now, it is time to execute `ansible-playbook` command and verify if your playboo
     ansible-playbook -i inventory/dev.yml playbooks/common.yml
 ```
 
-ansible-playbook -i /var/lib/jenkins/jobs/ansible/builds/13/archive/inventory/dev.yaml /var/lib/jenkins/jobs/ansible/builds/13/archive/playbooks/common.yml
+OR 
+
+```
+ansible-playbook -i /var/lib/jenkins/jobs/ansible/builds/<build number>/archive/inventory/dev.yaml /var/lib/jenkins/jobs/ansible/builds/<build number>/archive/playbooks/common.yml
+
+```
+
 
 You can go to each of the servers and check if `wireshark` has been installed by running `which wireshark` or `wireshark --version`
 
