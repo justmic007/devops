@@ -33,18 +33,28 @@ Commit your changes, create a Pull Request and merge them to `master` branch, ma
 Now run the playbook against your `uat` inventory and see what happens:
 
 ```
-    sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml
+    sudo ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml -vvv
+
+```
+
+OR
+
+```
+    ansible-playbook -i /home/ubuntu/ansible-config-mgt/inventory/uat.yml /home/ubuntu/ansible-config-mgt/playbooks/site.yaml -vvv
 
 ```
 
 You should be able to see both of your UAT Web servers configured and you can try to reach them from your browser:
 
-`http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php`
+`http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php` || `http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>`
 
 or
 
-`http://<Web1-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php`
+`http://<Web2-UAT-Server-Public-IP-or-Public-DNS-Name>/index.php` || `http://<Web2-UAT-Server-Public-IP-or-Public-DNS-Name>`
+###
+![Alt](images/tooling_app.png)
 
+###
 Your Ansible architecture now looks like this:
 
 ![Alt Project12 Architecture](images/project12_architecture.png)

@@ -73,7 +73,7 @@ After removing unnecessary directories and files, the `roles` structure should l
 To learn how to setup SSH agent and connect VS Code to your Jenkins-Ansible instance, please see this video:
 
 For Windows users – [ssh-agent on windows](https://youtu.be/OplGrY74qog)
-For Linux users – [ssh-agent on linux](https://youtu.be/OplGrY74qog)
+For Linux users – [ssh-agent on linux](https://www.youtube.com/watch?v=RRRQLgAfcJw&t=0s)
 
 ```
       [uat-webservers]
@@ -84,7 +84,16 @@ For Linux users – [ssh-agent on linux](https://youtu.be/OplGrY74qog)
 ```
 
 
-4. In `/etc/ansible/ansible.cfg` file uncomment `roles_path` string and provide a full path to your roles directory `roles_path    = /home/ubuntu/ansible-config-mgt/roles`, so Ansible could know where to find configured roles.
+4. In `/etc/ansible/ansible.cfg` file uncomment `roles_path` string and provide a full path to your roles directory `roles_path    = /home/ubuntu/ansible-config-mgt/roles`, so Ansible could know where to find configured roles. ***Note:*** Do this in the `Jenkins-Ansible` server
+
+If you cant find `/etc/ansible/ansible.cfg`, create it and enter the below:
+
+```
+      [defaults]
+      roles_path = /home/ubuntu/ansible-config-mgt/roles
+
+```
+
 
 5. It is time to start adding some logic to the webserver role. Go into `tasks` directory, and within the `main.yml` file, start writing configuration tasks to do the following:
 

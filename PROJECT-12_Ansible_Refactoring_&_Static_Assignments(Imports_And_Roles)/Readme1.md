@@ -79,12 +79,15 @@ Since you need to apply some tasks to your `dev` servers and `wireshark` is alre
 
 update `site.yml` with `- import_playbook: ../static-assignments/common-del.yml` instead of `common.yml` and run it against `dev` servers:
 
+First ssh into the `Jenkins-Ansible` server and note the directory where the artifacts are stored and the file extentions eg `.yaml` or `.yml`.
+
 ```
 cd /home/ubuntu/ansible-config-mgt/
 
-ansible-playbook -i inventory/dev.yml playbooks/site.yaml
+ansible-playbook -i inventory/dev.yaml playbooks/site.yml
 
 ```
+
 
 Make sure that `wireshark` is deleted on all the servers by running `wireshark --version`
 

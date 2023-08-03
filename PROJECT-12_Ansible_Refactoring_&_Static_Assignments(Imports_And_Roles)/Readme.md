@@ -23,7 +23,7 @@ Before we begin, let us make some changes to our Jenkins job – now every new c
 sudo mkdir /home/ubuntu/ansible-config-artifact
 
 ```
-2. Change permissions to this directory, so Jenkins could save files there – `chmod -R 0777 /home/ubuntu/ansible-config-artifact`
+2. Change permissions to this directory, so Jenkins could save files there – `chmod -R 777 /home/ubuntu/ansible-config-artifact`. ***Note:*** Make sure you are in the `/home/ubuntu` directory before setting the permission
 
 3. Go to `Jenkins web console -> Manage Jenkins -> Manage Plugins -> on Available` tab search for `Copy Artifact` and install this plugin without restarting Jenkins
 
@@ -34,6 +34,8 @@ sudo mkdir /home/ubuntu/ansible-config-artifact
 5. This project will be triggered by completion of your existing `ansible` project. Configure it accordingly: 
 
 ![Alt Copy Artifact Triger](images/copy_artifact_trigger.png)
+
+![Alt](images/save_artifacts-Config-Jenkins-.png)
 
 ***Note:*** You can configure number of builds to keep in order to save space on the server, for example, you might want to keep only last 2 or 5 build results. You can also make this change to your `ansible` job.
 
