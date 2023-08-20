@@ -115,7 +115,9 @@ To test this, you can update inventory for each environment and run Ansible agai
 
 ## SPECIAL NOTE:
 
-In my case, the above did not work, even after using the Project 13 video guide. So i did some debugging and came up with the below:
+See repo: `https://github.com/justmic007/ansible-config-mgt`
+
+In my case, the above did not work, even after using the `Project 13 video guide`. So i did some debugging and came up with the below:
 
 Goto the `webserver` folder under `roles` - `webservers` - `tasks` - `main.yml` file and comment out the whole task for apache and pase the below block of code(ansible tasks)
 
