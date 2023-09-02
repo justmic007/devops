@@ -119,207 +119,268 @@ See repo: `https://github.com/justmic007/ansible-config-mgt`
 
 In my case, the above did not work, even after using the `Project 13 video guide`. So i did some debugging and came up with the below:
 
-Goto the `webserver` folder under `roles` - `webservers` - `tasks` - `main.yml` file and comment out the whole task for apache and pase the below block of code(ansible tasks)
+Goto the `webserver` folder under `roles` - `webservers` - `tasks` - `main.yml` file and comment out the whole task for `apache` and paste the below block of code(ansible tasks for `nginx`)
 
 ```
-      ---
-      - name: Update system packages using yum
-        ansible.builtin.yum:
-          name: '*'
-          state: latest
 
-      - name: Install and configure Nginx
-        become: true
-        ansible.builtin.yum:
-          name: "nginx"
-          state: present
+---
+    - name: Update system packages using yum
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
 
-      - name: Install git
-        become: true
-        ansible.builtin.yum:
-          name: "git"
-          state: present
+    - name: Install and configure Nginx
+      become: true
+      ansible.builtin.yum:
+        name: "nginx"
+        state: present
 
-      - name: Install PHP and required extensions
-        become: true
-        ansible.builtin.yum:
-          name: "{{ item }}"
-          state: present
-        loop:
-          - php
-          - php-fpm
-          - php-common
-          - php-curl
-          - php-json
-          - php-pdo
-          - php-mbstring
-          - php-xml
-          - php-mysqli
+    - name: Install git
+      become: true
+      ansible.builtin.yum:
+        name: "git"
+        state: present
 
-      - name: Enable PHP MySQLi Extension
-        replace:
-          path: /etc/php.ini
-          regexp: '^;extension=mysqli$'
-          replace: 'extension=mysqli'
-        notify: Restart PHP-FPM
+    - name: Install PHP and required extensions
+      become: true
+      ansible.builtin.yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - php-fpm
+        - php-common
+        - php-curl
+        - php-json
+        - php-pdo
+        - php-mbstring
+        - php-xml
+        - php-mysqli
 
-      - name: Check PHP Configuration
-        command: php -i | grep php.ini
-        register: php_config
+    - name: Enable PHP MySQLi Extension
+      replace:
+        path: /etc/php.ini
+        regexp: '^;extension=mysqli$'
+        replace: 'extension=mysqli'
+      notify: Restart PHP-FPM
 
-      - name: Display PHP Configuration
-        debug:
-          var: php_config.stdout_lines
+    - name: Check PHP Configuration
+      command: php -i | grep php.ini
+      register: php_config
 
-      - name: Start PHP-FPM service
-        ansible.builtin.systemd:
-          name: php-fpm
-          state: started
+    - name: Display PHP Configuration
+      debug:
+        var: php_config.stdout_lines
 
-      - name: Add Git exception for directory with dubious ownership
-        become: true
-        ansible.builtin.command: git config --global --add safe.directory /usr/share/nginx/html
+    - name: Start PHP-FPM service
+      ansible.builtin.systemd:
+        name: php-fpm
+        state: started
 
-      - name: Create a temporary directory within /usr/share/nginx/
-        ansible.builtin.file:
-          path: /usr/share/nginx/temporary
-          state: directory
-        register: temp_dir
+    - name: Add Git exception for directory with dubious ownership
+      become: true
+      ansible.builtin.command: git config --global --add safe.directory /usr/share/nginx/html
 
-      - name: Clone a repo using the git module
-        become: true
-        ansible.builtin.git:
-          repo: https://github.com/justmic007/tooling.git
-          dest: "{{ temp_dir.path }}"
-          version: master  # You can specify a specific branch or commit if needed
-          force: yes
+    - name: Create a temporary directory within /usr/share/nginx/
+      ansible.builtin.file:
+        path: /usr/share/nginx/temporary
+        state: directory
+      register: temp_dir
 
-      - name: Use rsync to move contents to /usr/share/nginx/html
-        ansible.builtin.shell: rsync -a --delete "{{ temp_dir.path }}/" /usr/share/nginx/html/
-        ansible.builtin.shell: rsync -a --delete --exclude=index.html --exclude=50x.html "{{ temp_dir.path }}/" /usr/share/nginx/html/
+    - name: Clone a repo using the git module
+      become: true
+      ansible.builtin.git:
+        repo: https://github.com/justmic007/tooling.git
+        dest: "{{ temp_dir.path }}"
+        version: master  # You can specify a specific branch or commit if needed
+        force: yes
 
-      - name: Copy html content to one level up
-        become: true
-        ansible.builtin.copy:
-          src: /usr/share/nginx/html/html/
-          dest: /usr/share/nginx/html/
-          remote_src: yes
+    - name: Use rsync to move contents to /usr/share/nginx/html
+      ansible.builtin.shell: rsync -a --delete "{{ temp_dir.path }}/" /usr/share/nginx/html/
+      ansible.builtin.shell: rsync -a --delete --exclude=index.html --exclude=50x.html "{{ temp_dir.path }}/" /usr/share/nginx/html/
 
-      - name: Set ownership and permissions for /usr/share/nginx/html
-        # become: true
-        ansible.builtin.file:
-          path: /usr/share/nginx/html
-          owner: nginx  # Change this to the appropriate user
-          group: nginx  # Change this to the appropriate group
-          mode: '0755'  # Sets permissions to rwxr-xr-x
-          recurse: yes
-          # force: yes
+    - name: Copy html content to one level up
+      become: true
+      ansible.builtin.copy:
+        src: /usr/share/nginx/html/html/
+        dest: /usr/share/nginx/html/
+        remote_src: yes
 
-      - name: Set ownership and permissions for /var/run/php-fpm/www.sock
-        # become: true
-        ansible.builtin.file:
-          path: /var/run/php-fpm
-          # path: /var/run/php-fpm/www.sock
-          owner: nginx  # Change this to the appropriate user
-          group: nginx  # Change this to the appropriate group
-          mode: '0755'  # Sets permissions to rwxr-xr-x
-          recurse: yes
-          # force: yes
+    - name: Set ownership and permissions for /usr/share/nginx/html
+      ansible.builtin.file:
+        path: /usr/share/nginx/html
+        owner: nginx  # Change this to the appropriate user
+        group: nginx  # Change this to the appropriate group
+        mode: '0755'  # Sets permissions to rwxr-xr-x
+        recurse: yes
 
-      - name: Set ownership and permissions for /var/log/nginx/
-        ansible.builtin.file:
-          path: /var/log/nginx
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
+    - name: Set ownership and permissions for /var/run/php-fpm/www.sock
+      ansible.builtin.file:
+        path: /var/run/php-fpm
+        owner: nginx  # Change this to the appropriate user
+        group: nginx  # Change this to the appropriate group
+        mode: '0755'  # Sets permissions to rwxr-xr-x
+        recurse: yes
 
-      - name: Set ownership and permissions for /var/log/php-fpm/
-        ansible.builtin.file:
-          path: /var/log/php-fpm
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
-        # register: file_result
-      - name: Set ownership and permissions for /etc/nginx/
-        ansible.builtin.file:
-          path: /etc/nginx
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
-        # register: file_result
+    - name: Set ownership and permissions for /var/log/nginx/
+      ansible.builtin.file:
+        path: /var/log/nginx
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Set ownership and permissions for /etc/php-fpm.d
-        ansible.builtin.file:
-          path: /etc/php-fpm.d
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
-        # register: file_result
+    - name: Set ownership and permissions for /var/log/php-fpm/
+      ansible.builtin.file:
+        path: /var/log/php-fpm
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Set ownership and permissions for /var/run/php-fpm
-        ansible.builtin.file:
-          path: /var/run/php-fpm
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
-        # register: file_result
+    - name: Set ownership and permissions for /etc/nginx/
+      ansible.builtin.file:
+        path: /etc/nginx
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Set ownership and permissions for /var/lib/php
-        ansible.builtin.file:
-          path: /var/lib/php
-          owner: nginx
-          group: nginx
-          mode: '0755'
-          recurse: yes
-        # register: file_result
+    - name: Set ownership and permissions for /etc/php-fpm.d
+      ansible.builtin.file:
+        path: /etc/php-fpm.d
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Replace user and group settings in www.conf
-        replace:
-          path: /etc/php-fpm.d/www.conf
-          regexp: '^(user|group) = .*'
-          replace: '\1 = nginx'  # Update to the desired user (e.g., nginx)
+    - name: Set ownership and permissions for /var/run/php-fpm
+      ansible.builtin.file:
+        path: /var/run/php-fpm
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Replace the code block
-        become: yes
-        ansible.builtin.replace:
-          path: /etc/nginx/conf.d/default.conf
-          regexp: '#location ~ \\.php\$ {\n    #    root           html;\n    #    fastcgi_pass   127.0.0.1:9000;\n    #    fastcgi_index  index.php;\n    #    fastcgi_param  SCRIPT_FILENAME  /scripts\$fastcgi_script_name;\n    #    include        fastcgi_params;\n    #}'
-          replace: |
-            location ~ \.php$ {
-                root           /usr/share/nginx/html;
-                fastcgi_pass   unix:/var/run/php-fpm/www.sock;
-                fastcgi_index  index.php;
-                fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
-                include        fastcgi_params;
-            }
+    - name: Set ownership and permissions for /var/lib/php
+      ansible.builtin.file:
+        path: /var/lib/php
+        owner: nginx
+        group: nginx
+        mode: '0755'
+        recurse: yes
 
-      - name: Replace root and index in location block
-        become: yes
-        ansible.builtin.replace:
-          path: /etc/nginx/conf.d/default.conf
-          regexp: 'location / {[^\}]*}'
-          replace: |
-            location / {
-                root   /usr/share/nginx/html;
-                index  index.php index.html index.htm;
-            }
+    - name: Replace user and group settings in www.conf
+      replace:
+        path: /etc/php-fpm.d/www.conf
+        regexp: '^(user|group) = .*'
+        replace: '\1 = nginx'  # Update to the desired user (e.g., nginx)
 
-      - name: Start service nginx, if not started
-        become: true
-        ansible.builtin.service:
-          name: nginx
-          state: started
+    - name: Replace the code block
+      become: yes
+      ansible.builtin.replace:
+        path: /etc/nginx/conf.d/default.conf
+        regexp: '#location ~ \\.php\$ {\n    #    root           html;\n    #    fastcgi_pass   127.0.0.1:9000;\n    #    fastcgi_index  index.php;\n    #    fastcgi_param  SCRIPT_FILENAME  /scripts\$fastcgi_script_name;\n    #    include        fastcgi_params;\n    #}'
+        replace: |
+          location ~ \.php$ {
+              root           /usr/share/nginx/html;
+              fastcgi_pass   unix:/var/run/php-fpm/www.sock;
+              fastcgi_index  index.php;
+              fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+              include        fastcgi_params;
+          }
 
-      - name: Recursively remove /usr/share/nginx/html/html/ directory
-        become: true
-        ansible.builtin.file:
-          path: /usr/share/nginx/html/html
-          state: absent
+    - name: Replace root and index in location block
+      become: yes
+      ansible.builtin.replace:
+        path: /etc/nginx/conf.d/default.conf
+        regexp: 'location / {[^\}]*}'
+        replace: |
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.php index.html index.htm;
+          }
+
+    - name: Create database user with name 'admin' and password 'admin' with all database privileges
+      vars:
+        mysql_root_password: root
+      community.mysql.mysql_user:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_host: localhost
+        name: admin
+        password: admin
+        priv: '*.*:ALL'
+        state: present
+
+    - name: Create 'users' table in 'tooling' database
+      vars:
+        mysql_root_password: root
+      community.mysql.mysql_db:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_host: localhost
+        name: tooling
+      become: yes
+
+    - name: Create 'users' table in 'tooling' database
+      vars:
+        mysql_root_password: root
+        sql_query: "CREATE TABLE IF NOT EXISTS tooling.users (id INT NOT NULL, username VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, user_type VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, PRIMARY KEY (id));"
+      community.mysql.mysql_query:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_host: localhost
+        login_port: 3306
+        query: "{{ sql_query }}"
+      become: yes
+
+    - name: Insert record into 'users' table if not exists
+      vars:
+        mysql_root_password: root
+        sql_query: >
+          INSERT IGNORE INTO tooling.users (
+            id,
+            username,
+            password,
+            email,
+            user_type,
+            status
+          )
+          VALUES (
+            1,
+            'admin',
+            '21232f297a57a5a743894a0e4a801fc3',
+            'dare@dare.com',
+            'admin',
+            '1'
+          );
+      community.mysql.mysql_query:
+        login_user: root
+        login_password: "{{ mysql_root_password }}"
+        login_host: localhost
+        login_port: 3306
+        query: "{{ sql_query }}"
+      become: yes
+
+    - name: Replace database host
+      become: yes  # If sudo privileges are required
+      ansible.builtin.replace:
+        path: /usr/share/nginx/html/functions.php
+        regexp: "'mysql\\.tooling\\.svc\\.cluster\\.local'"
+        replace: "'localhost'"
+
+    - name: Start service nginx, if not started
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: started
+
+    - name: Recursively remove /usr/share/nginx/html/html/ directory
+      become: true
+      ansible.builtin.file:
+        path: /usr/share/nginx/html/html
+        state: absent
 
 ```
 
@@ -624,14 +685,21 @@ Goto `static-assignments` - `uat-webservers.yml`. I added the `mysql` role to se
           - webserver
 
 ```
-
+Note: 
+- Apart from installing mysql roles, All mysql configuration ie, user creation, table creation, inserting user data in table is done using the ansible playbook.
+- You might need to restart the web servers to be able to login successfully
 
 See screenshots
-
 1. Tooling app login page deployed using nginx
 
     ![Alt](images/nginx-login.png)
-2. Error page displayed after when tried to login
+2. After successfull login with `admin`, `admin`
+    ![Alt](images/logged_in.png)
+
+
+
+Screenshots of errors i initially had
+   Error page displayed after when tried to login
 
     ![Alt](images/error-after-login.png)
 3. Logs that points to the tooling app
