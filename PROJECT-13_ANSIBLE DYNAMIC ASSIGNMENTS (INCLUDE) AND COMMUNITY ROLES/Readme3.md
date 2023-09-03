@@ -685,7 +685,9 @@ Goto `static-assignments` - `uat-webservers.yml`. I added the `mysql` role to se
           - webserver
 
 ```
-Note: 
+
+## Note: 
+- Repo: `https://github.com/justmic007/ansible-config-mgt`
 - Apart from installing mysql roles, All mysql configuration ie, user creation, table creation, inserting user data in table is done using the ansible playbook.
 - You might need to restart the web servers to be able to login successfully
 
@@ -701,7 +703,7 @@ See screenshots
 Screenshots of errors i initially had
    Error page displayed after when tried to login
 
-    ![Alt](images/error-after-login.png)
+  ![Alt](images/error-after-login.png)
 3. Logs that points to the tooling app
 
     ![Alt](images/php-app-error.png)
